@@ -1,0 +1,53 @@
+services:
+  orchestrator:
+    build: ./orchestrator
+    image: sim/orchestrator:latest
+    ports:
+      - "8000:8000"       # host:container mapping
+    networks:
+      - sim_net
+      - public_net
+    volumes:
+      - orch_data:/data
+    environment:
+      - ORCH_LOG=/data/orch_logs.jsonl
+  
+  shim:
+    build: ./shim
+    image: sim/shim:latest
+    ports:
+      - "8001:8001"           # only for testing; remove later
+    networks:
+      - sim_net
+      - public_net            # so you can hit it from host for tests
+    environment:
+      - KALI_MCP_URL=http://kali-mcp:5000
+      - ORCH_URL=http://orchestrator:8000
+
+  kali-mcp:
+    build: ./kali-mcp
+    image: local/kali-mcp:latest
+    networks:
+      - sim_net
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - sim_net
+
+volumes:
+  db_data:
+  orch_data:
+
+networks:
+  sim_net:
+    internal: true
+  
+  public_net:
+    driver: bridge

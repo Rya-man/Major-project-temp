@@ -1,0 +1,6 @@
+fastapi[latest]
+uvicorn[standard]
+networkx
+pydantic
+requests
+python-dotenv
