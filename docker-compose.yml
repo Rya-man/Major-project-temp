@@ -40,6 +40,25 @@ services:
       - db_data:/var/lib/postgresql/data
     networks:
       - sim_net
+  
+  red-agent:
+    build: ./agents/red_agent
+    image: sim/red-agent:latest
+    networks:
+      - sim_net
+    environment:
+      - ORCH_URL=http://orchestrator:8000
+      - SHIM_URL=http://shim:8001
+      - RED_SLEEP=6
+  
+  blue-agent:
+    build: ./agents/blue_agent
+    image: sim/blue-agent:latest
+    networks:
+      - sim_net
+    environment:
+      - ORCH_URL=http://orchestrator:8000
+      - BLUE_SLEEP=8
 
 volumes:
   db_data:

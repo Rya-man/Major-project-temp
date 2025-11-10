@@ -5,7 +5,7 @@ class NodeView(BaseModel):
     id: str
     type: str
     services: List[str]
-    security_level: int
+    security_level: Optional[int] = None
     compromised: bool
 
 class StateResponse(BaseModel):
